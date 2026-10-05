@@ -16,6 +16,9 @@
            --green:#5cc98a; --green-soft:#1f3a2b; --blue:#6aa9e0; --blue-soft:#1e3348;
            --amber:#d9a84e; --violet:#b08ce0; --dot-off:#39424a; --red:#f2857c;
            --shadow:0 1px 3px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35); }
+    /* White on a pale green button is barely legible once the green lightens for
+       the dark theme; the label takes the dark ink instead. */
+    .go{color:#0d1a13}
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
@@ -292,6 +295,14 @@
     .navbar .lg{display:none}  .navbar .sm{display:inline}
   }
   @media (max-width:430px){ .navbar .logo.sm{display:none} }
+  /* The optional filter, folded. Styled as a panel that opens, not as a block of
+     controls, so it never competes with the one decision above it. */
+  .fampanel>summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:9px}
+  .fampanel>summary::-webkit-details-marker{display:none}
+  .fampanel>summary::after{content:"\25be";color:var(--muted);font-size:14px;margin-left:auto}
+  .fampanel[open]>summary::after{content:"\25b4"}
+  .fampanel>summary .q{margin:0}
+  .fampanel .qh{margin-top:8px}
   .hidden{display:none!important}
 
   /* ---- NARROW SCREENS ----------------------------------------------------
@@ -377,20 +388,22 @@
        Tightening alone was not enough: at 390 px the buttons still ended at 765 px against a
        fold near 690. What sat above them was 98 px of lede explaining what the platform is,
        and a reader holding a phone cannot act on it until the choices are made. So on a narrow
-       screen the panel the reader MUST use comes first and the lede follows the choices. The
-       level choice is the required one: "Show what works" stays disabled until a level is
-       picked. Nothing is hidden and the wide layout is untouched. */
+       screen the panel the reader MUST use comes first and the lede follows the choices.
+       Nothing is hidden and the wide layout is untouched. */
     #v-home{display:flex;flex-direction:column}
     #v-home .mast{order:1}  #v-home .updated{order:2}  #v-home h1{order:3}
-    /* The action comes straight after the level choice, because the optional family chips
-       run to twenty-odd rows with all three levels on and pushed the button to 1195 px. */
     /* THE INTRO IS BACK ABOVE THE CHOICES. Ollie Jay, 3 October 2026: *"there is now no
        intro text on the front page.. I think we should have something - just not verbose"*.
        It had been moved below them when it ran to 98 px of three-line explanation; it is
        now one sentence, so it costs two lines and the button still clears the fold. */
+    /* THE ACTION COMES STRAIGHT AFTER THE LEVEL CHOICE. The optional family chips sit
+       below it on a narrow screen and above it on a wide one. Measured both ways on
+       5 October 2026: with the chips first the button starts at 719 px against a fold
+       near 690, and with the button first it starts at 659 px. Readers reported missing
+       this button, so on a phone it clears the fold and the optional control trails it. */
     #homelede{order:4}      #stats{order:5}          #levelpanel{order:6}
-    #v-home > .row{order:7} #fampanel{order:8}       #covwrap{order:9}
-    #figstrip{order:10}     #v-home .foot{order:11}
+    #v-home > .row{order:7} #fampanel{order:8}
+    #figstrip{order:9}      #v-home .foot{order:10}
     #homelede{margin-top:4px}
   }
   /* The smallest screens still in use are 320 px wide and show about 450 px. The three
@@ -505,7 +518,7 @@
        fact about the page, and a line of italic text under the title is how a document
        carries one. THE DATE IS FILLED BY THE BUILD so it cannot say one thing while the
        page says another. -->
-  <p class="updated"><span class="rule"></span>Updated 4 October 2026</p>
+  <p class="updated"><span class="rule"></span>Updated 5 October 2026</p>
   <h1>What works against heat?</h1>
   <p class="lede" id="homelede">Interventions against heat, each rated by reading the primary
      studies and recording what every study measured.</p>
@@ -536,11 +549,15 @@
     <div class="lv" id="levels"></div>
   </div>
 
-  <div class="panel" id="fampanel">
-    <p class="q">Narrow it down <span class="muted small">— optional</span></p>
+  <!-- THE FAMILY CHIPS FOLD AWAY. Twenty-one chips, 247 px tall, sat between the one
+       decision on this page and the button that acts on it; labelled optional and shaped
+       like the main event. Shut by default, the button sits directly under the levels. -->
+  <details class="panel fampanel" id="fampanel">
+    <summary><span class="q">Narrow it down</span>
+      <span class="muted small">optional</span></summary>
     <p class="qh">Leave all off to see everything at the levels you chose.</p>
     <div class="chips" id="fams"></div>
-  </div>
+  </details>
 
   <div class="row" style="margin-top:16px">
     <button class="go" id="go">Show what works</button>
@@ -552,10 +569,6 @@
        type coverage"*, and on what it shows: *"it also shows where new research should be
        prioritised"*. It replaces the coverage sentence that was in the lede, because a reader
        who is shown the tropical belt pale against everything else does not need telling. -->
-  <section id="covwrap">
-    <iframe id="covframe" title="Which climates the evidence covers"
-            scrolling="no"></iframe>
-  </section>
 
 
   <!-- THE SIZE OF THE REVIEW, STATED. Added 3 October 2026: the front page made no claim at all
@@ -670,6 +683,16 @@
   <div id="l-rest"></div>
   <div id="l-pools"></div>
 
+<!-- WHERE THE EVIDENCE COMES FROM, AT THE FOOT OF THE RESULTS. It was the last thing on
+     the front page and the largest element on it, so it became the end of the scroll and
+     readers stopped there instead of reaching the list. It is a statement about
+     provenance, which is context for a result rather than a way to begin. Moved
+     5 October 2026. -->
+  <section id="covwrap">
+    <iframe id="covframe" title="Which climates the evidence covers"
+            scrolling="no"></iframe>
+  </section>
+
   <div class="foot">
     <span class="small muted">Evidence reviewed and rated by</span>
     <img class="logo hh" src="data:image/png;base64,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"
@@ -678,6 +701,7 @@
 </div>
 
 <!-- ============================ 3. the card ============================ -->
+
 <div id="v-card" class="hidden">
   <div class="topbar">
     <button class="link nowrap" id="back-list" aria-label="Back to the list"><span class="lg">← back to the list</span><span class="sm">← back</span></button>
@@ -762,6 +786,7 @@
 -->
 <style>
   :root{
+      --rule:#e2e7e4; --soft:#fafaf8; --warnbg:#fdf2f2; --warn:#c0392b;
     --bg:#f4f6f5; --card:#ffffff; --ink:#1a2420; --muted:#5c6b64; --line:#e2e7e4;
     --green:#2e8b57; --green-soft:#d8ece0; --blue:#3574b3; --blue-soft:#dbe8f4;
     --amber:#b8791f; --amber-soft:#f0e2cc; --dot-off:#d3dad6;
@@ -777,6 +802,7 @@
       --accent:#e6c987; --accent-bg:#2c2717; --accent-line:#5c4d24;
       --studied:#5cc98a; --sparse:#6f7d76; --shadow:0 1px 3px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
       --red:#f2857c; --red-soft:#3d1d1a;
+      --rule:#2b333a; --soft:#1a2026; --warnbg:#3a1f1d; --warn:#f2857c;
     }
   }
   /* --- location resolver ------------------------------------------------ */
@@ -1462,6 +1488,25 @@
     .wsrow,.msrow{gap:4px 8px}
   }
 
+
+  /* ---- DARK THEME, LAST WORD -------------------------------------------
+     These elements set a light hex directly instead of going through a variable,
+     so the dark palette at the top of this sheet never reached them and they stayed
+     white on a dark card. The overrides have to sit at the END: the rules they
+     correct appear later in the file than the palette does, and equal specificity
+     is settled by source order. Found 5 October 2026 by scanning every colour
+     declared outside the dark block for a luminance the dark theme cannot have
+     intended, after Ollie Jay opened the live site on a phone set to dark mode. */
+  @media (prefers-color-scheme: dark){
+    .ftagd summary{border-color:#39424a;color:#c3cdd4;background:#232a31}
+    .ftagd summary:hover{background:#2b333a}
+    .ftagd.harm summary:hover{background:#4e2420}
+    .stbox{background:#1a2026;border-left-color:#4a545e}
+    .sth{color:#aab4bd}
+    /* On a dark card the ink IS light, so white text on it is white on white. */
+    .cardfig .figb[aria-pressed="true"]{color:#12161a}
+    .tier .tt.meas{color:#10231a}
+  }
 </style>
 <script>
 /* ===================== ONE BENIGN BROWSER MESSAGE, SILENCED =====================
@@ -2848,7 +2893,13 @@ const LEVELS = [
   ["Building",  "The home, workplace or school — roof, walls, windows, cooling"],
   ["Personal",  "What a person does, wears, drinks and carries"],
 ];
-const S = {levels:new Set(["Landscape","Building","Personal"]),
+/* NOTHING IS PRESELECTED. Three level cards shown already chosen read as a legend
+   rather than as a control: green means "chosen" everywhere else on this platform, so
+   three green cards tell a reader what the levels ARE and never that a choice is wanted.
+   Starting empty also leaves the action button as the only green thing on the page,
+   which is what people were failing to find. Ollie Jay, 5 October 2026, from two
+   testers: *"people keep missing the green show what works button"*. */
+const S = {levels:new Set(),
            fams:new Set(), sort:"evidence"};
 
 const RUNG = {evidence:"evidence", works:"works", cost:"cost", time:"time"};
@@ -2941,7 +2992,7 @@ const famLabel = f => FAM_SHORT[f] || f;
 function famsAtLevels(){
   const seen = [];
   ITEMS.forEach(i => {
-    if (!S.levels.has(i.level) || i.kind === "pool") return;
+    if (!atLevel(i) || i.kind === "pool") return;
     const f = seen.find(f => f.name === i.family && f.level === i.level);
     f ? f.n++ : seen.push({name: i.family, level: i.level, n: 1});
   });
@@ -2949,7 +3000,9 @@ function famsAtLevels(){
 }
 function drawFams(){
   const seen = famsAtLevels().map(f => f.name);
-  document.getElementById("fampanel").classList.toggle("hidden", !seen.length);
+  const fp = document.getElementById("fampanel");
+  fp.classList.toggle("hidden", !seen.length);
+  if (!seen.length) fp.open = false;
   document.getElementById("fams").innerHTML = seen.map(f =>
     `<button class="chip" data-fam="${esc(f)}" title="${esc(f)}"
        aria-pressed="${S.fams.has(f)}">${esc(famLabel(f))}</button>`
@@ -2991,14 +3044,33 @@ function drawListFams(){
     drawList();
   });
 }
+/* THE BUTTON IS THE FEEDBACK. It was a fixed label beside a separate count, so nothing
+   on the page moved when a reader touched a level and nothing drew the eye to the thing
+   they were meant to press next. It now says what it will do, and changes the moment
+   anything is chosen. It is never disabled: a reader who has chosen nothing has asked
+   for everything, which is a sensible thing to want and a dead button is not an answer. */
 function hint(){
   const n = matches().filter(i => i.kind !== "pool").length;   /* pools are not on offer */
+  /* THE READER'S ORDER, NOT THE CLICK ORDER. A Set iterates in insertion order, so
+     choosing building then landscape read "building and landscape" while the page
+     itself lists landscape first. The three levels always name in the same order. */
+  const picked = ["Landscape", "Building", "Personal"]
+    .filter(l => S.levels.has(l)).map(l => l.toLowerCase());
+  const named = picked.length === 0 ? ""
+    : picked.length === 1 ? picked[0] + " "
+    : picked.slice(0, -1).join(", ") + " and " + picked[picked.length - 1] + " ";
+  document.getElementById("go").textContent =
+    `Show ${S.levels.size ? "" : "all "}${n} ${named}intervention${n === 1 ? "" : "s"}`;
+  document.getElementById("go").disabled = false;
   document.getElementById("hint").textContent =
-    S.levels.size ? `${n} intervention${n===1?"":"s"} match` : "choose at least one thing you can change";
-  document.getElementById("go").disabled = !S.levels.size;
+    S.fams.size ? `narrowed to ${S.fams.size === 1 ? "one family" : S.fams.size + " families"}` : "";
 }
+/* AN EMPTY CHOICE IS NOT AN EMPTY RESULT. With no level chosen the reader has not
+   narrowed anything, so every level is on offer - the same rule the family chips have
+   always followed. */
+const atLevel = i => !S.levels.size || S.levels.has(i.level);
 function matches(){
-  const hit = ITEMS.filter(i => S.levels.has(i.level) && (!S.fams.size || S.fams.has(i.family)));
+  const hit = ITEMS.filter(i => atLevel(i) && (!S.fams.size || S.fams.has(i.family)));
   /* ONE INTERVENTION, ONE ROW. A card that belongs at two levels is listed at both, so
      that a reader who has only one of them switched on still finds it; with both
      switched on it would otherwise appear twice, which reads as two different things.
@@ -3284,7 +3356,7 @@ function drawList(){
      the level they had come for, and with three levels selected the rated count mixed all
      three together. */
   const LEVEL_ORDER = ["Landscape", "Building", "Personal"];
-  const lines = LEVEL_ORDER.filter(l => S.levels.has(l)).map(l => {
+  const lines = LEVEL_ORDER.filter(l => !S.levels.size || S.levels.has(l)).map(l => {
     const lv = l.toLowerCase();
     const r = rated.filter(i => i.level === l).length;
     const u = rest.filter(i => i.level === l).length;
@@ -3471,6 +3543,9 @@ function show(id){
     if (e) e.classList.toggle("hidden", v !== id);
   });
   window.scrollTo(0,0);
+  /* The coverage frame measures as zero while the list is hidden, so it is re-fitted on
+     the way in. */
+  if (id === "v-list" && window.__COVFIT) window.__COVFIT();
 }
 function openMethods(){
   CAME_FROM = VIEWS.find(v => {
@@ -3482,10 +3557,11 @@ function openMethods(){
 
 drawLevels(); drawFams(); hint();
 
-/* THE COVERAGE MAP loads once with the page. It is not behind a disclosure, because the
-   thing it says - that the tropics are the thinnest belt on the platform - is the thing a
-   reader should meet before choosing anything. The frame reports its own height the same
-   way the analysis panels do. */
+/* THE COVERAGE MAP loads once with the page and sits at the foot of the results, where
+   what it says - that the tropics are the thinnest belt on the platform - qualifies a
+   result the reader has already asked for. The frame reports its own height the same way
+   the analysis panels do. It begins inside a hidden container, which has no layout, so it
+   measures as zero until the list is first shown; show() calls the fit again then. */
 addEventListener("DOMContentLoaded", function(){
   const f = document.getElementById("covframe");
   if (!f || typeof window.__CLIMATEMAP !== "string"){
@@ -3500,6 +3576,7 @@ addEventListener("DOMContentLoaded", function(){
       const h = Math.ceil(d.body.getBoundingClientRect().height) + 4;
       if (Math.abs(h - (f.__h || 0)) > 2){ f.__h = h; writeH(f, h); }
     });
+    window.__COVFIT = () => { fit(); settleLater(fit); };
     fit(); settleLater(fit);
     const dc = f.contentDocument;
     if (dc){
@@ -3544,7 +3621,7 @@ document.querySelectorAll("[data-sort]").forEach(b => b.onclick = () => {
   <p><strong>How to cite.</strong> Jay O et al. What Works Against Heat: an evidence
      platform for heat-health interventions. Sydney: University of Sydney Heat and Health
      Research Centre and the Global Heat Health Information Network; 2026.
-     Version 4 October 2026.</p>
+     Version 5 October 2026.</p>
   <p><strong>Rights.</strong> &copy; 2026 The University of Sydney. All rights reserved. The
      ratings, the written assessments and the structure of this platform are the work of
      the authors. They may not be reproduced, redistributed, or used to train or evaluate
