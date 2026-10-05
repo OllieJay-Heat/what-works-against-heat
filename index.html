@@ -600,7 +600,16 @@
   </div>
   <h1 id="l-head">What works</h1>
   <p class="lede" id="l-sub"></p>
-  <div id="l-fams"></div>
+  <!-- THE FAMILY CHIPS ARE FOLDED HERE TOO. Twenty-one chips, one per line on a phone,
+       sat between the reader and the first result: pressing the green button landed them
+       on filters rather than on interventions. Measured 5 October 2026 at 390 px, the
+       first intervention was 1,103 px down. The order chips stay OUT of this panel - an
+       order is a primary control on a dashboard and it costs one line. -->
+  <details class="panel fampanel" id="lfampanel">
+    <summary><span class="q">Narrow it down</span>
+      <span class="muted small">optional</span></summary>
+    <div id="l-fams"></div>
+  </details>
   <!-- Ollie Jay, 4 October 2026: *"the order pills should line up the same way the show and
        family pills do. Currently they are listed below"*. The row carried `.bar`, which wraps,
        so on a narrow screen the chips dropped to a line of their own while every family row
@@ -3037,6 +3046,13 @@ function drawListFams(){
     levels.map(g => `<div class="famrow">
        <span class="flab small muted">${esc(g.level)}</span>
        <div class="chips">${g.fams.map(chip).join("")}</div></div>`).join("");
+  /* A reader who narrowed on the front page must see that a filter is on - but springing
+     the panel open puts twenty-one chips back between them and the first result, which is
+     the fault this disclosure exists to fix. The summary says it instead. */
+  const lfs = document.querySelector("#lfampanel > summary > .muted");
+  if (lfs) lfs.textContent = S.fams.size
+    ? (S.fams.size === 1 ? "one family on" : S.fams.size + " families on")
+    : "optional";
   document.querySelectorAll("[data-lfam]").forEach(b => b.onclick = () => {
     const f = b.dataset.lfam;
     if (!f) S.fams.clear();
@@ -3343,6 +3359,24 @@ function syncPanel(wrapId, frameId, key, level){
   }
 }
 
+function allThreeLine(rated, rest, shown){
+  const r = rated.length, u = rest.length;
+  if (!r && !u) return `<span class="lvline">Nothing has been rated yet.</span>`;
+  if (!r) return `<span class="lvline">None of these has been rated yet. ` +
+                 `All ${u} are listed below.</span>`;
+  /* NO PER-LEVEL SPLIT HERE. An intervention that exists at two levels - a fan is both a
+     building measure and a personal one - is listed once when every level is in play and
+     twice when the levels are taken one at a time. A split would therefore read "20
+     building" here and "21 building" on the building-only view, which is two different
+     true statements and looks like an error. The total is the same either way, so the
+     total is what this line gives. */
+  return `<span class="lvline"><b>${r}</b> intervention${r === 1 ? " has" : "s have"} been ` +
+         `rated and ${r === 1 ? "is" : "are"} listed first.` +
+         (u ? ` ${u === 1 ? "One more is" : u + " more are"} not yet rated and ` +
+              `${u === 1 ? "is" : "are"} listed at the bottom.` : "") +
+         `</span>`;
+}
+
 function drawList(){
   drawListFams();
   syncCostBenefit();
@@ -3355,8 +3389,13 @@ function drawList(){
      bottom.. repeat for building and personal."* A single total told a reader nothing about
      the level they had come for, and with three levels selected the rated count mixed all
      three together. */
+  /* THE SAME SENTENCE THREE TIMES IS NOT THREE SENTENCES. With every level in play all
+     three fired at once and the reader met near-identical prose where the results should
+     be. Ollie Jay's per-level wording is kept for one or two levels, which is the case he
+     asked for; all three collapse to a single line. 5 October 2026. */
   const LEVEL_ORDER = ["Landscape", "Building", "Personal"];
-  const lines = LEVEL_ORDER.filter(l => !S.levels.size || S.levels.has(l)).map(l => {
+  const shown = LEVEL_ORDER.filter(l => !S.levels.size || S.levels.has(l));
+  const lines = shown.length === 3 ? allThreeLine(rated, rest, shown) : shown.map(l => {
     const lv = l.toLowerCase();
     const r = rated.filter(i => i.level === l).length;
     const u = rest.filter(i => i.level === l).length;
