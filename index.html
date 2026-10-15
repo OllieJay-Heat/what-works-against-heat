@@ -461,6 +461,10 @@
   html,body{overflow-x:hidden}
 
 
+  /* INTERIM PROTOTYPE NOTICE, shown on every view until the full release. */
+  .proto{background:var(--card);border-bottom:3px solid var(--amber);box-shadow:var(--shadow)}
+  .proto p{max-width:900px;margin:0 auto;padding:12px 18px;font-size:14px;line-height:1.5}
+  .proto strong{color:var(--amber)}
 </style>
 <script>
 /* ===================== ONE BENIGN BROWSER MESSAGE, SILENCED =====================
@@ -500,6 +504,13 @@
 </script>
 </head>
 <body>
+
+<div class="proto" role="note" aria-label="Interim prototype notice">
+  <p><strong>Interim prototype.</strong> This platform is under development and not all
+     interventions have yet been rated. The ratings shown are provisional and may change
+     before the full release, which will accompany peer-reviewed publication of the
+     underlying evidence synthesis. Please do not cite or reproduce these ratings.</p>
+</div>
 
 <!-- ============================ 1. front page ============================ -->
 <div id="v-home" class="wrap">
@@ -3660,7 +3671,7 @@ document.querySelectorAll("[data-sort]").forEach(b => b.onclick = () => {
   <p><strong>How to cite.</strong> Jay O et al. What Works Against Heat: an evidence
      platform for heat-health interventions. Sydney: University of Sydney Heat and Health
      Research Centre and the Global Heat Health Information Network; 2026.
-     Version 5 October 2026.</p>
+     Interim prototype, version 5 October 2026.</p>
   <p><strong>Rights.</strong> &copy; 2026 The University of Sydney. All rights reserved. The
      ratings, written assessments, data and structure of this platform are the work of the
      authors. Consulting the platform to inform research, teaching, public health practice
